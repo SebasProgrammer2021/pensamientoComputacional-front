@@ -28,6 +28,32 @@
   color: #61dafb;
 }
 
+.controls {
+  display: block;
+  gap: 12px;
+}
+
+.test {
+  display: flex;
+  gap: 12px;
+}
+
+canvas {
+  border: 1px solid black;
+}
+
+.testView {
+  height: 300px;
+  width: 300px;
+}
+
+.ordersView {
+  display: flex;
+  flex-wrap: wrap;
+  width: 80px;
+  justify-content: center;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
