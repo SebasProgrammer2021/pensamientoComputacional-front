@@ -51,7 +51,37 @@ canvas {
   display: flex;
   flex-wrap: wrap;
   width: 80px;
+  height: 160px;
   justify-content: center;
+  margin-top: 20px;
+  overflow-y: auto;
+}
+
+button {
+  cursor: pointer;
+}
+
+.buttonStyle {
+  border-radius: 20px;
+  background-color: #61b0b7;
+  padding: 0.5rem;
+}
+
+.buttonLeftStyles {
+  border-radius: 20px;
+  background-color: #ff6961;
+  padding: 0.5rem;
+}
+
+.buttonRightStyles {
+  border-radius: 20px;
+  background-color: #83a83b;
+  padding: 0.5rem;
+}
+
+.imgSize {
+  height: 40px;
+  widows: 40px;
 }
 
 @keyframes App-logo-spin {
