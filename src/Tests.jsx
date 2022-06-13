@@ -1,29 +1,32 @@
 /* eslint-disable no-undef */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Modal from "./components/Modal";
+// import princes from "../public/test2";
 
 const Tests = () => {
+  let navigate = useNavigate();
   const [ordersa, setOrdersa] = useState([]);
   const [positionTop, setPositionTop] = useState(0);
   const [positionLeft, setPositionLeft] = useState(0);
   const [startTest, setStartTest] = useState();
+  const [anserwesSent, setAnserwesSent] = useState(false);
   const [blockRoute, setBlockRoute] = useState([
-    { top: "134px", left: "14px" },
+    { top: "167px", left: "294px" },
   ]);
   const [showTrace, setShowTrace] = useState();
   let modifier = 38;
   const block = document.getElementById("block");
+  const [displayArray, setDisplayArray] = useState([]);
+  const [displayEl, setDisplayEl] = useState();
+  const [alert, setAlert] = useState({ show: false, Title: "", message: "" });
+  const [currentTest, setCurrentTest] = useState(1);
+  // dominio/pregunta/1
 
   let test = {
-    goalPosition: { top: 362, left: 242 },
-    startPostion: { top: 134, left: 14 },
-    obstacles: [
-      { top: 286, left: 14 },
-      { top: 248, left: 128 },
-      { top: 324, left: 166 },
-      { top: 286, left: 280 },
-    ],
+    goalPosition: { top: "364px", left: "505px" },
+    startPostion: { top: 167, left: 294 },
   };
 
   const { goalPosition, startPostion, obstacles } = test;
@@ -56,28 +59,28 @@ const Tests = () => {
 
   const handleDirectionClick = (e) => {
     let instructionsList = document.querySelector(".ordersView");
-    if (startTest) {
+    if (startTest && !anserwesSent) {
       instructionsList.innerHTML += e.target.name + "\n";
       setOrdersa((oldArray) => [...ordersa, e.target.name]);
       const { style } = block;
 
       switch (e.target.name) {
         case "arriba":
-          if (`${parseInt(style.top) + modifier}` >= 210) {
+          if (`${parseInt(style.top) + modifier}` >= 207) {
             style.top = `${parseInt(style.top) - modifier}px`;
           } else {
             alert("estas en el borde");
           }
           break;
         case "abajo":
-          if (`${parseInt(style.top) + modifier}` <= 400) {
+          if (`${parseInt(style.top) + modifier}` <= 433) {
             style.top = `${parseInt(style.top) + modifier}px`;
           } else {
             alert("estas en el borde");
           }
           break;
         case "izquierda":
-          if (`${parseInt(style.left) + modifier}` >= 90) {
+          if (`${parseInt(style.left) + modifier}` >= 350) {
             style.left = `${parseInt(style.left) - modifier}px`;
           } else {
             alert("estas en el borde");
@@ -85,7 +88,7 @@ const Tests = () => {
 
           break;
         case "derecha":
-          if (`${parseInt(style.left) + modifier}` <= 280) {
+          if (`${parseInt(style.left) + modifier}` <= 581) {
             style.left = `${parseInt(style.left) + modifier}px`;
           } else {
             alert("estas en el borde");
@@ -96,9 +99,9 @@ const Tests = () => {
       }
       setPositionTop(style.top);
       setPositionLeft(style.left);
-      handleBlockedByBug(style.top, style.left);
+      // handleBlockedByBug(style.top, style.left);
       setBlockRoute(blockRoute.concat({ top: style.top, left: style.left }));
-      // console.log(style.top, style.left, "actual");
+      console.log(style.top, style.left, "top left");
     } else {
       return;
     }
@@ -113,95 +116,148 @@ const Tests = () => {
 
     ctx.canvas.width = 300;
     ctx.canvas.height = 300;
-    ctx.drawImage(canvasBg, 6, 10);
+    ctx.drawImage(canvasBg, 2, 2);
     containerTestView.appendChild(canvasObject);
     document.getElementById("start").style.display = "flex";
     document.getElementById("goal").style.display = "flex";
     handleDirectionClick(e);
   };
 
+  const handleNextTest = () => {
+    setStartTest(false);
+    setAnserwesSent(false);
+    // handleStartTest();
+    navigate("/test/2");
+  };
+
   const revealBlock = () => {
-    let block = document.getElementById("block");
-    block.style.display = "flex";
-    block.style.zIndex = 10;
     setShowTrace(true);
+    let block = document.getElementById("block");
+    block.style.zIndex = 10;
+    block.style.display = "flex";
   };
 
   const validateSequence = () => {
-    let data = {
-      positionTop: positionTop,
-      positionLeft: positionLeft,
-    };
-
-    if (startTest) {
-      console.log("data respuesta usuario:>> ", data);
+    setCurrentTest(currentTest <= 5 ? currentTest + 1 : null);
+    setAnserwesSent(true);
+    // let data = {
+    // };
+    const { top, left } = goalPosition;
+    // handleNextTest();
+    console.log(test.goalPosition);
+    console.log("top left respuesta usuario:>> ", positionTop, positionLeft);
+    if (top === positionTop && left === positionLeft) {
+      setAlert({
+        show: true,
+        title: "Genial",
+        message: "Lo has logrado, llegase al objetivo.",
+      });
       revealBlock();
     } else {
+      revealBlock();
+
+      setAlert({
+        show: true,
+        title: "Mala suerte",
+        message: "Casi lo logras, cierra este modal para continuar.",
+      });
       return;
     }
   };
 
+  const delay = (ms) =>
+    new Promise((res) => {
+      setTimeout(() => {
+        res();
+      }, ms);
+    });
+
+  useEffect(() => {
+    (async function () {
+      for (let el of blockRoute) {
+        await delay(1000);
+        setDisplayEl(el);
+      }
+      setDisplayEl(undefined);
+    })();
+  }, [blockRoute]);
+
+  useEffect(() => {
+    displayEl && setDisplayArray((prev) => [...prev, displayEl]);
+  }, [displayEl]);
+
   return (
     <div className="App">
-      <h1>Pruebas de Pensamiento Computacional</h1>
+      {alert.show && <Modal config={alert} setAlert={setAlert} />}
+      <div className="fatherTitle">
+        <div className="headerTitle">
+          <h1 className="">Pruebas de Pensamiento Computacional</h1>
+        </div>
+        <div></div>
+      </div>
+      <img src="" alt="" />
       <img
         className="imgBg"
         src="https://i.imgur.com/LayNEQc.png"
         style={{ display: "none", height: "100px" }}
         alt="grid img"
       />
-      <div
+      <img
         id="start"
         style={{
           display: "none",
-          width: "23px",
-          height: "23px",
-          backgroundColor: "yellow",
+          width: "83px",
+          height: "63px",
           position: "absolute",
           top: startPostion.top,
           left: startPostion.left,
         }}
-      ></div>
-      <div
+        src="https://gurutecno.com/wp-content/uploads/2016/12/Mario-Run.png"
+        alt="start"
+      />
+      <img
         id="block"
         style={{
           display: "none",
-          width: "23px",
-          height: "23px",
-          backgroundColor: "mediumaquamarine",
+          width: "83px",
+          height: "63px",
           position: "absolute",
-          top: "134px",
-          left: "14px",
+          top: "167px",
+          left: "294px",
         }}
-      ></div>
+        src="https://gurutecno.com/wp-content/uploads/2016/12/Mario-Run.png"
+        alt="start"
+      />
       {showTrace &&
-        blockRoute.map((coodinates, index) => (
-          <div
+        displayArray.map((coodinates, index) => (
+          <img
             key={index}
             id="block"
             style={{
               display: showTrace ? "flex" : "none",
-              width: "23px",
-              height: "23px",
-              backgroundColor: "mediumaquamarine",
+              width: "83px",
+              height: "63px",
               position: "absolute",
               top: coodinates.top,
               left: coodinates.left,
             }}
-          ></div>
+            src="https://gurutecno.com/wp-content/uploads/2016/12/Mario-Run.png"
+            alt="start"
+          />
         ))}
-      <div
+      <img
         id="goal"
         style={{
           display: "none",
-          width: "23px",
-          height: "23px",
-          backgroundColor: "red",
+          width: "45px",
+          height: "45px",
           position: "absolute",
           top: goalPosition.top,
           left: goalPosition.left,
         }}
-      ></div>
+        src={require("./images/test3.png")}
+        alt="goal"
+      />
       {/* {obstacles.map((obstacle, index) => (
         <div
           key={index}
@@ -223,10 +279,10 @@ const Tests = () => {
         </div>
       ))} */}
 
-      <button onClick={handleStartTest}>iniciar test</button>
-      <button onClick={validateSequence}>Enviar respuestas</button>
       <div className="test">
-        <div className="testView">prueba 1</div>
+        <div className="testView">
+          {/* <span className="testTitle">Prueba 1</span> */}
+        </div>
         <div className="controls">
           <div
             style={{
@@ -237,7 +293,7 @@ const Tests = () => {
             <button onClick={handleDirectionClick} className="buttonStyle">
               <img
                 name="arriba"
-                className="imgSize"
+                className="imgSize button"
                 src="https://img.icons8.com/stickers/100/000000/thick-arrow-pointing-up.png"
                 alt="up icon"
               />
@@ -274,7 +330,34 @@ const Tests = () => {
           </div>
           <div className="ordersView"></div>
         </div>
+        <div
+          id="actions"
+          style={{
+            width: "20rem",
+          }}
+        >
+          <button
+            className="button-73"
+            onClick={handleStartTest}
+            disabled={startTest}
+          >
+            iniciar test
+          </button>
+          <button
+            className="button-29"
+            disabled={anserwesSent}
+            onClick={validateSequence}
+          >
+            Enviar respuestas
+          </button>
+        </div>
       </div>
+      {anserwesSent && (
+        <aside style={{ position: "absolute", right: "0", top: "50%" }}>
+          siguite test
+          <button onClick={handleNextTest}>test {currentTest}</button>
+        </aside>
+      )}
       <button style={{ marginLeft: 60 }}>
         <Link to="/report">Ver reporte</Link>
       </button>

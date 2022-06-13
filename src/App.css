@@ -7,6 +7,24 @@
   pointer-events: none;
 }
 
+h1 {
+  margin-bottom: 5rem;
+  padding: 2rem;
+  color: #ffffff;
+  font-family: "Raleway", sans-serif;
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 72px;
+  margin: 0 0 24px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.fatherTitle {
+  display: flex;
+  justify-content: center;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -36,6 +54,7 @@
 .test {
   display: flex;
   gap: 12px;
+  justify-content: center;
 }
 
 canvas {
@@ -45,6 +64,10 @@ canvas {
 .testView {
   height: 300px;
   width: 300px;
+}
+
+.testTitle {
+  margin-bottom: 2rem;
 }
 
 .ordersView {
@@ -82,6 +105,173 @@ button {
 .imgSize {
   height: 40px;
   widows: 40px;
+}
+
+ul {
+  display: block;
+  justify-content: center;
+  /* align-content: end; */
+  position: absolute;
+  bottom: 0;
+  left: 38%;
+}
+
+div.picture1 {
+  width: 100px; /*width of your image*/
+  height: 100px; /*height of your image*/
+  /* background-image: url("https://www.kindpng.com/imgv/TxhRTm_8-bit-mario-png-mario-bros-8-bits/"); */
+  z-index: 0;
+  background-color: "yellow";
+  margin: 0; /* If you want no margin */
+  padding: 0; /*if your want to padding */
+}
+
+/* CSS btn-29*/
+.button-29 {
+  margin-top: 20px;
+  align-items: center;
+  appearance: none;
+  background-image: radial-gradient(
+    100% 100% at 100% 0,
+    #5adaff 0,
+    #5468ff 100%
+  );
+  border: 0;
+  border-radius: 6px;
+  box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,
+    rgba(45, 35, 66, 0.3) 0 7px 13px -3px, rgba(58, 65, 111, 0.5) 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: "JetBrains Mono", monospace;
+  height: 48px;
+  justify-content: center;
+  line-height: 1;
+  list-style: none;
+  overflow: hidden;
+  padding-left: 16px;
+  padding-right: 16px;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transition: box-shadow 0.15s, transform 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow, transform;
+  font-size: 18px;
+}
+
+.button-29:disabled {
+  background-color: #787878;
+  box-shadow: #504743 0 -6px 8px inset;
+  transform: none;
+  background-image: radial-gradient(
+    100% 100% at 100% 0,
+    #363636 0,
+    #030303 100%
+  );
+}
+
+.button-29:disabled:hover {
+  cursor: default;
+  background-color: #787878;
+  box-shadow: #504743 0 -6px 8px inset;
+  transform: none;
+  background-image: radial-gradient(
+    100% 100% at 100% 0,
+    #363636 0,
+    #030303 100%
+  );
+}
+
+.button-29:focus {
+  box-shadow: #3c4fe0 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px,
+    rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
+}
+
+.button-29:hover {
+  box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px,
+    rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.button-29:active {
+  box-shadow: #3c4fe0 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
+/* CSS  button-73*/
+.button-73 {
+  appearance: none;
+  background-color: #ffffff;
+  border-radius: 40em;
+  border-style: none;
+  box-shadow: #adcfff 0 -12px 6px inset;
+  box-sizing: border-box;
+  color: #000000;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system, sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.24px;
+  margin: 0;
+  outline: none;
+  padding: 1rem 1.3rem;
+  quotes: auto;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-73:disabled {
+  background-color: #787878;
+  box-shadow: #504743 0 -12px 6px inset;
+  color: white;
+  cursor: default;
+}
+
+.button-73:hover:disabled {
+  background-color: #787878;
+  box-shadow: #504743 0 -6px 8px inset;
+  transform: none;
+}
+
+.button-73:hover {
+  background-color: #ffc229;
+  box-shadow: #ff6314 0 -6px 8px inset;
+  transform: scale(1.125);
+}
+
+.button-73:active {
+  transform: scale(1.025);
+}
+
+/* MODAL STYELS */
+#overlay {
+  position: fixed; /* Sit on top of the page content */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+  z-index: 20; /* Specify a stack order in case you're using a different order for other elements */
+  cursor: pointer; /* Add a pointer on hover */
+}
+
+@media (min-width: 768px) {
+  .button-73 {
+    font-size: 1.5rem;
+    padding: 0.75rem 2rem;
+  }
 }
 
 @keyframes App-logo-spin {
