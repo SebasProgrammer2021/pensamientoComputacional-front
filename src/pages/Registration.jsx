@@ -3,20 +3,41 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import Modal from "../components/Modal";
 import "../formStyles.css";
+import registerStudent from "../api/endpoints/registerStudent";
+
 const Registration = () => {
   let navigate = useNavigate();
   const [alert, setAlert] = useState({ show: false, Title: "", message: "" });
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
+    reset,
   } = useForm();
+
   const onSubmit = (data) => {
-    let ansok = false;
     if (data) {
-      console.log(JSON.stringify(data));
-      navigate("/test/1");
+      registerStudent(data)
+        .then(function (response) {
+          if (response) {
+            setAlert({
+              show: true,
+              title: "Genial",
+              message: response,
+            });
+            reset();
+            setTimeout(() => {
+              navigate("test/1");
+            }, 2000);
+          }
+        })
+        .catch(function (error) {
+          setAlert({
+            show: true,
+            title: "oh oh",
+            message: error?.response?.data?.Mensaje,
+          });
+        });
     } else {
       setAlert({
         show: true,
@@ -25,7 +46,6 @@ const Registration = () => {
       });
     }
   };
-  console.log(watch("example")); // watch input value by passing the name of it
 
   return (
     <div>
@@ -46,13 +66,14 @@ const Registration = () => {
                 <form onSubmit={handleSubmit(onSubmit)} _lpchecked="1">
                   <div className="form-group">
                     <input
-                      {...register("identification", { required: true })}
+                      {...register("codigo", { required: true })}
+                      autoComplete="1094666333"
                       type="number"
                       className="form-control"
-                      id="identification"
+                      id="codigo"
                       placeholder="Cedula"
                     />
-                    {errors.identification && (
+                    {errors.codigo && (
                       <span style={{ color: "red" }}>
                         Este campo es requerido
                       </span>
@@ -60,13 +81,13 @@ const Registration = () => {
                   </div>
                   <div className="form-group">
                     <input
-                      {...register("name", { required: true })}
+                      {...register("nombre", { required: true })}
                       type="text"
                       className="form-control"
-                      id="name"
+                      id="nombre"
                       placeholder="Nombre"
                     />
-                    {errors.name && (
+                    {errors.nombre && (
                       <span style={{ color: "red" }}>
                         Este campo es requerido
                       </span>

@@ -62,8 +62,10 @@ canvas {
 }
 
 .testView {
+  margin-right: 16px;
   height: 300px;
   width: 300px;
+  margin-top: 10px;
 }
 
 .testTitle {
@@ -73,7 +75,7 @@ canvas {
 .ordersView {
   display: flex;
   flex-wrap: wrap;
-  width: 80px;
+  width: 60px;
   height: 160px;
   justify-content: center;
   margin-top: 20px;
@@ -108,22 +110,16 @@ button {
 }
 
 ul {
-  display: block;
+  display: flex;
   justify-content: center;
-  /* align-content: end; */
   position: absolute;
   bottom: 0;
-  left: 38%;
+  margin-bottom: 0;
 }
 
-div.picture1 {
-  width: 100px; /*width of your image*/
-  height: 100px; /*height of your image*/
-  /* background-image: url("https://www.kindpng.com/imgv/TxhRTm_8-bit-mario-png-mario-bros-8-bits/"); */
-  z-index: 0;
-  background-color: "yellow";
-  margin: 0; /* If you want no margin */
-  padding: 0; /*if your want to padding */
+li {
+  margin-right: 20px;
+  color: gray;
 }
 
 /* CSS btn-29*/
@@ -262,7 +258,7 @@ div.picture1 {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+  background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
   z-index: 20; /* Specify a stack order in case you're using a different order for other elements */
   cursor: pointer; /* Add a pointer on hover */
 }

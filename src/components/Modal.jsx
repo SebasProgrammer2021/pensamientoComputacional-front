@@ -21,7 +21,7 @@ const Modal = ({ config, setAlert }) => {
               data-dismiss="modal"
               aria-label="Close"
               onClick={() => {
-                setAlert({ show: false });
+                setAlert({ show: false, Title: "", message: "" });
               }}
             >
               <span aria-hidden="true">&times;</span>
@@ -34,7 +34,7 @@ const Modal = ({ config, setAlert }) => {
               className="btn btn-secondary"
               data-dismiss="modal"
               onClick={() => {
-                setAlert({ show: false });
+                setAlert({ show: false, Title: "", message: "" });
               }}
             >
               Close

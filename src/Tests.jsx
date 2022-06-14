@@ -1,9 +1,9 @@
 /* eslint-disable no-undef */
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Modal from "./components/Modal";
-// import princes from "../public/test2";
+import getCoordinates from "./api/endpoints/gestTest";
 
 const Tests = () => {
   let navigate = useNavigate();
@@ -12,9 +12,6 @@ const Tests = () => {
   const [positionLeft, setPositionLeft] = useState(0);
   const [startTest, setStartTest] = useState();
   const [anserwesSent, setAnserwesSent] = useState(false);
-  const [blockRoute, setBlockRoute] = useState([
-    { top: "167px", left: "294px" },
-  ]);
   const [showTrace, setShowTrace] = useState();
   let modifier = 38;
   const block = document.getElementById("block");
@@ -22,43 +19,40 @@ const Tests = () => {
   const [displayEl, setDisplayEl] = useState();
   const [alert, setAlert] = useState({ show: false, Title: "", message: "" });
   const [currentTest, setCurrentTest] = useState(1);
-  // dominio/pregunta/1
+  let instructionsList = document.querySelector(".ordersView");
+  let { id } = useParams();
+  const [test, setTest] = useState({});
+  const [blockRoute, setBlockRoute] = useState([]);
 
-  let test = {
-    goalPosition: { top: "364px", left: "505px" },
-    startPostion: { top: 167, left: 294 },
-  };
+  useEffect(() => {
+    getCoordinates(id)
+      .then(function (response) {
+        if (response) {
+          let data = response[0];
+          setTest({
+            startPostion: { top: data[1], left: data[0] },
+            goalPosition: { top: data[3], left: data[2] },
+          });
 
-  const { goalPosition, startPostion, obstacles } = test;
+          // setAlert({
+          //   show: true,
+          //   title: "Genial",
+          //   message: response,
+          // });
+        }
+      })
+      .catch(function (error) {
+        // setAlert({
+        //   show: true,
+        //   title: "oh oh",
+        //   message: error?.response?.data?.Mensaje,
+        // });
+      });
+  }, [id]);
 
-  const handleBlockedByBug = (nextTop, nextLeft) => {
-    let availableToMove = true;
-    // console.log(nextTop, nextLeft);
-    obstacles.map((obstacle) => {
-      if (`${obstacle.top}px` === nextTop) {
-        console.log(nextTop, nextLeft);
-        console.log(`${obstacle.top}px`);
-        console.log(nextTop);
-
-        // document.getElementById("block").style.top = `${
-        //   parseInt(nextTop) - modifier
-        // }px`;
-
-        // availableToMove = false;
-      }
-      // else if (`${obstacle.left}px` === nextLeft) {
-      //   document.getElementById("block").style.left = `${
-      //     parseInt(nextLeft) + modifier
-      //   }px`;
-      // } else {
-      //   return;
-      // }
-    });
-    // return availableToMove;
-  };
+  const { goalPosition, startPostion } = test || {};
 
   const handleDirectionClick = (e) => {
-    let instructionsList = document.querySelector(".ordersView");
     if (startTest && !anserwesSent) {
       instructionsList.innerHTML += e.target.name + "\n";
       setOrdersa((oldArray) => [...ordersa, e.target.name]);
@@ -99,9 +93,7 @@ const Tests = () => {
       }
       setPositionTop(style.top);
       setPositionLeft(style.left);
-      // handleBlockedByBug(style.top, style.left);
       setBlockRoute(blockRoute.concat({ top: style.top, left: style.left }));
-      console.log(style.top, style.left, "top left");
     } else {
       return;
     }
@@ -126,41 +118,49 @@ const Tests = () => {
   const handleNextTest = () => {
     setStartTest(false);
     setAnserwesSent(false);
-    // handleStartTest();
-    navigate("/test/2");
+    let container = document.querySelector(".testView");
+    var child = container.firstElementChild;
+    container.removeChild(child);
+    setBlockRoute([]);
+    setDisplayArray([]);
+    setShowTrace(false);
+    block.style.display = "none";
+    document.getElementById("start").style.display = "none";
+    document.getElementById("goal").style.display = "none";
+    instructionsList.innerHTML = "";
+    navigate(`/test/${currentTest}`);
   };
 
   const revealBlock = () => {
     setShowTrace(true);
-    let block = document.getElementById("block");
     block.style.zIndex = 10;
     block.style.display = "flex";
   };
 
   const validateSequence = () => {
-    setCurrentTest(currentTest <= 5 ? currentTest + 1 : null);
-    setAnserwesSent(true);
-    // let data = {
-    // };
-    const { top, left } = goalPosition;
-    // handleNextTest();
-    console.log(test.goalPosition);
-    console.log("top left respuesta usuario:>> ", positionTop, positionLeft);
-    if (top === positionTop && left === positionLeft) {
-      setAlert({
-        show: true,
-        title: "Genial",
-        message: "Lo has logrado, llegase al objetivo.",
-      });
-      revealBlock();
+    if (startTest) {
+      setCurrentTest(currentTest <= 4 ? currentTest + 1 : null);
+      setAnserwesSent(true);
+      // let data = {
+      // };
+      const { top, left } = goalPosition;
+      if (top === positionTop && left === positionLeft) {
+        setAlert({
+          show: true,
+          title: "Genial",
+          message: "Lo has logrado, llegase al objetivo.",
+        });
+        revealBlock();
+      } else {
+        revealBlock();
+        setAlert({
+          show: true,
+          title: "Mala suerte",
+          message: "Casi lo logras, cierra este modal para continuar.",
+        });
+        return;
+      }
     } else {
-      revealBlock();
-
-      setAlert({
-        show: true,
-        title: "Mala suerte",
-        message: "Casi lo logras, cierra este modal para continuar.",
-      });
       return;
     }
   };
@@ -175,7 +175,7 @@ const Tests = () => {
   useEffect(() => {
     (async function () {
       for (let el of blockRoute) {
-        await delay(1000);
+        await delay(700);
         setDisplayEl(el);
       }
       setDisplayEl(undefined);
@@ -209,8 +209,8 @@ const Tests = () => {
           width: "83px",
           height: "63px",
           position: "absolute",
-          top: startPostion.top,
-          left: startPostion.left,
+          top: startPostion?.top,
+          left: startPostion?.left,
         }}
         src="https://gurutecno.com/wp-content/uploads/2016/12/Mario-Run.png"
         alt="start"
@@ -222,8 +222,8 @@ const Tests = () => {
           width: "83px",
           height: "63px",
           position: "absolute",
-          top: "167px",
-          left: "294px",
+          top: startPostion?.top,
+          left: startPostion?.left,
         }}
         src="https://gurutecno.com/wp-content/uploads/2016/12/Mario-Run.png"
         alt="start"
@@ -252,33 +252,12 @@ const Tests = () => {
           width: "45px",
           height: "45px",
           position: "absolute",
-          top: goalPosition.top,
-          left: goalPosition.left,
+          top: goalPosition?.top,
+          left: goalPosition?.left,
         }}
         src={require("./images/test3.png")}
         alt="goal"
       />
-      {/* {obstacles.map((obstacle, index) => (
-        <div
-          key={index}
-          id="obstacle"
-          style={{
-            display: "flex",
-
-            width: "23px",
-            height: "23px",
-            position: "absolute",
-            top: obstacle.top,
-            left: obstacle.left,
-          }}
-        >
-          <img
-            src="https://img.icons8.com/external-kiranshastry-lineal-color-kiranshastry/64/undefined/external-bug-coding-kiranshastry-lineal-color-kiranshastry.png"
-            alt="bug"
-          />
-        </div>
-      ))} */}
-
       <div className="test">
         <div className="testView">
           {/* <span className="testTitle">Prueba 1</span> */}
@@ -378,15 +357,6 @@ const Tests = () => {
             rel="noreferrer"
           >
             Gruesa flecha apuntando hacia abajo icon by Icons8
-          </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            rel="noreferrer"
-            href="https://icons8.com/icon/uauxHDCVDyl8/bug"
-          >
-            Bug icon by Icons8
           </a>
         </li>
         <li>
