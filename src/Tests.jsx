@@ -1,9 +1,9 @@
 /* eslint-disable no-undef */
 import React, { useEffect, useState } from "react";
-import "./App.css";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Modal from "./components/Modal";
-import getCoordinates from "./api/endpoints/gestTest";
+import getCoordinates from "./api/endpoints/getTest";
+import registerTestResult from "./api/endpoints/registerTestResult";
 
 const Tests = () => {
   let navigate = useNavigate();
@@ -23,7 +23,10 @@ const Tests = () => {
   let { id } = useParams();
   const [test, setTest] = useState({});
   const [blockRoute, setBlockRoute] = useState([]);
+  let codigo = localStorage.getItem("cedula");
 
+  // startPostion: {  left:446 ,top:205  },
+  // goalPosition: { left:294 ,top:357  },
   useEffect(() => {
     getCoordinates(id)
       .then(function (response) {
@@ -33,7 +36,6 @@ const Tests = () => {
             startPostion: { top: data[1], left: data[0] },
             goalPosition: { top: data[3], left: data[2] },
           });
-
           // setAlert({
           //   show: true,
           //   title: "Genial",
@@ -63,36 +65,59 @@ const Tests = () => {
           if (`${parseInt(style.top) + modifier}` >= 207) {
             style.top = `${parseInt(style.top) - modifier}px`;
           } else {
-            alert("estas en el borde");
+            setAlert({
+              show: true,
+              title: "oh oh",
+              message: "Estas en el borde",
+            });
           }
           break;
         case "abajo":
-          if (`${parseInt(style.top) + modifier}` <= 433) {
+          if (`${parseInt(style.top) + modifier}` <= 434) {
             style.top = `${parseInt(style.top) + modifier}px`;
           } else {
-            alert("estas en el borde");
+            setAlert({
+              show: true,
+              title: "oh oh",
+              message: "Estas en el borde",
+            });
           }
           break;
         case "izquierda":
           if (`${parseInt(style.left) + modifier}` >= 350) {
             style.left = `${parseInt(style.left) - modifier}px`;
           } else {
-            alert("estas en el borde");
+            setAlert({
+              show: true,
+              title: "oh oh",
+              message: "Estas en el borde",
+            });
           }
-
           break;
         case "derecha":
           if (`${parseInt(style.left) + modifier}` <= 581) {
             style.left = `${parseInt(style.left) + modifier}px`;
           } else {
-            alert("estas en el borde");
+            setAlert({
+              show: true,
+              title: "oh oh",
+              message: "Estas en el borde",
+            });
           }
           break;
         default:
           break;
       }
       setPositionTop(style.top);
+      // console.log(
+      //   "🚀 ~ file: Tests.jsx ~ line 94 ~ handleDirectionClick ~ style.top",
+      //   style.top
+      // );
       setPositionLeft(style.left);
+      // console.log(
+      //   "🚀 ~ file: Tests.jsx ~ line 96 ~ handleDirectionClick ~ style.left",
+      //   style.left
+      // );
       setBlockRoute(blockRoute.concat({ top: style.top, left: style.left }));
     } else {
       return;
@@ -136,28 +161,87 @@ const Tests = () => {
     block.style.zIndex = 10;
     block.style.display = "flex";
   };
-
   const validateSequence = () => {
     if (startTest) {
       setCurrentTest(currentTest <= 4 ? currentTest + 1 : null);
       setAnserwesSent(true);
-      // let data = {
-      // };
       const { top, left } = goalPosition;
-      if (top === positionTop && left === positionLeft) {
-        setAlert({
-          show: true,
-          title: "Genial",
-          message: "Lo has logrado, llegase al objetivo.",
-        });
+      // console.log(
+      //   "🚀 ~ file:  validateSequence ~ top-positionTop",
+      //   `${top}px`,
+      //   positionTop
+      // );
+      // console.log(
+      //   "🚀 ~ file: Tests.jsx ~ line 170 ~ validateSequence ~ left-positionLeft",
+      //   `${left}px`,
+      //   positionLeft
+      // );
+      // console.log(
+      //   positionTop === `${top + 10}px` || positionTop === `${top - 10}px`
+      // );
+
+      if (
+        positionTop === `${top + 10}px` ||
+        (positionTop === `${top - 10}px` &&
+          positionLeft === `${left + 29}px`) ||
+        positionLeft === `${left - 29}px`
+      ) {
         revealBlock();
+        registerTestResult({
+          idPregunta: currentTest,
+          idEstudiante: codigo,
+          valoracion: 1,
+        })
+          .then(function (response) {
+            if (response === "Status: 200 OK") {
+              setAlert({
+                show: true,
+                title: "Genial",
+                message: "Lo has logrado, llegase al objetivo.",
+              });
+            } else {
+              setAlert({
+                show: true,
+                title: "Ho ho",
+                message: "Ocurrio un problema al registrar tu respuesta",
+              });
+            }
+          })
+          .catch(function (error) {
+            // setAlert({
+            //   show: true,
+            //   title: "oh oh",
+            //   message: error?.response?.data?.Mensaje,
+            // });
+          });
       } else {
         revealBlock();
-        setAlert({
-          show: true,
-          title: "Mala suerte",
-          message: "Casi lo logras, cierra este modal para continuar.",
-        });
+        registerTestResult({
+          idPregunta: currentTest,
+          idEstudiante: codigo,
+          valoracion: 0,
+        })
+          .then(function (response) {
+            if (response === "Status: 200 OK") {
+              setAlert({
+                show: true,
+                title: "Mala suerte",
+                message: "Casi lo logras, cierra este modal para continuar.",
+              });
+              // setAlert({
+              //   show: true,
+              //   title: "Genial",
+              //   message: response,
+              // });
+            }
+          })
+          .catch(function (error) {
+            // setAlert({
+            //   show: true,
+            //   title: "oh oh",
+            //   message: error?.response?.data?.Mensaje,
+            // });
+          });
         return;
       }
     } else {
@@ -331,15 +415,19 @@ const Tests = () => {
           </button>
         </div>
       </div>
-      {anserwesSent && (
+      {anserwesSent && currentTest != null && (
         <aside style={{ position: "absolute", right: "0", top: "50%" }}>
           siguite test
           <button onClick={handleNextTest}>test {currentTest}</button>
         </aside>
       )}
-      <button style={{ marginLeft: 60 }}>
-        <Link to="/report">Ver reporte</Link>
-      </button>
+      {currentTest == null && (
+        <div>
+          <nav className="navMenu">
+            <a href="/report">Ver Reporte</a>
+          </nav>
+        </div>
+      )}
       <ul>
         <li>
           <a

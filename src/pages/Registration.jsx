@@ -17,6 +17,7 @@ const Registration = () => {
 
   const onSubmit = (data) => {
     if (data) {
+      localStorage.setItem("cedula", data?.cedula);
       registerStudent(data)
         .then(function (response) {
           if (response) {
@@ -60,20 +61,27 @@ const Registration = () => {
         <div className="row justify-content-center">
           <div className="col-md-5">
             <div className="card">
-              <h2 className="card-title text-center">Formulario de Registro</h2>
+              <h2
+                className="card-title text-center"
+                style={{
+                  color: "black",
+                }}
+              >
+                Formulario de Registro
+              </h2>
               <div className="card-bo.dy py-md-4">
                 {/* "handleSubmit" will validate your inputs before invoking "onSubmit" */}
                 <form onSubmit={handleSubmit(onSubmit)} _lpchecked="1">
                   <div className="form-group">
                     <input
-                      {...register("codigo", { required: true })}
+                      {...register("cedula", { required: true })}
                       autoComplete="1094666333"
                       type="number"
                       className="form-control"
-                      id="codigo"
+                      id="cedula"
                       placeholder="Cedula"
                     />
-                    {errors.codigo && (
+                    {errors.cedula && (
                       <span style={{ color: "red" }}>
                         Este campo es requerido
                       </span>

@@ -3,7 +3,7 @@ const axios = require("axios");
 
 const getCoordinates = async (testId) => {
   return axios
-    .get(`${config().SERVER_URL}/puntoDto/obtenerPuntos/${testId}`)
+    .get(`${config().SERVER_URL}/eje/obtenerEjes/${testId}`)
     .then((response) => response.data);
 };
 

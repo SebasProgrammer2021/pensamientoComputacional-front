@@ -1,11 +1,11 @@
 @import url("https://fonts.googleapis.com/css?family=PT+Sans");
 
 body {
-  /* background: #fff; */
   font-family: "PT Sans", sans-serif;
   background-color: #0093e9;
   background-image: linear-gradient(160deg, #0093e9 0%, #80d0c7 100%);
 }
+
 h2 {
   padding-top: 1.5rem;
 }

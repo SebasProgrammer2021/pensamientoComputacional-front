@@ -10,12 +10,6 @@
   -webkit-text-size-adjust: none;
 }
 
-html,
-body {
-  height: 100%;
-  overflow: hidden;
-}
-
 body {
   padding: 0;
   margin: 0;

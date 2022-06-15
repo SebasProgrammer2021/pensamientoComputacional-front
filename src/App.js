@@ -4,6 +4,7 @@ import PageNotFound from "./pages/PageNotFound";
 import Registration from "./pages/Registration";
 import Report from "./Report";
 import Tests from "./Tests";
+import "./App.css";
 
 function App() {
   return (
