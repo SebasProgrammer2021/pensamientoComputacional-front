@@ -24,7 +24,8 @@ const Registration = () => {
             setAlert({
               show: true,
               title: "Genial",
-              message: response,
+              message:
+                "Puedes continuar con la prueba, en instantes serás redirigido",
             });
             reset();
             setTimeout(() => {

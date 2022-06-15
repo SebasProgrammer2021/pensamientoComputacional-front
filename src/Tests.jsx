@@ -25,8 +25,6 @@ const Tests = () => {
   const [blockRoute, setBlockRoute] = useState([]);
   let codigo = localStorage.getItem("cedula");
 
-  // startPostion: {  left:446 ,top:205  },
-  // goalPosition: { left:294 ,top:357  },
   useEffect(() => {
     getCoordinates(id)
       .then(function (response) {
@@ -36,20 +34,9 @@ const Tests = () => {
             startPostion: { top: data[1], left: data[0] },
             goalPosition: { top: data[3], left: data[2] },
           });
-          // setAlert({
-          //   show: true,
-          //   title: "Genial",
-          //   message: response,
-          // });
         }
       })
-      .catch(function (error) {
-        // setAlert({
-        //   show: true,
-        //   title: "oh oh",
-        //   message: error?.response?.data?.Mensaje,
-        // });
-      });
+      .catch(function (error) {});
   }, [id]);
 
   const { goalPosition, startPostion } = test || {};
@@ -62,7 +49,7 @@ const Tests = () => {
 
       switch (e.target.name) {
         case "arriba":
-          if (`${parseInt(style.top) + modifier}` >= 207) {
+          if (`${parseInt(style.top) + modifier}` >= 237) {
             style.top = `${parseInt(style.top) - modifier}px`;
           } else {
             setAlert({
@@ -73,7 +60,7 @@ const Tests = () => {
           }
           break;
         case "abajo":
-          if (`${parseInt(style.top) + modifier}` <= 434) {
+          if (`${parseInt(style.top) + modifier}` <= 464) {
             style.top = `${parseInt(style.top) + modifier}px`;
           } else {
             setAlert({
@@ -109,15 +96,7 @@ const Tests = () => {
           break;
       }
       setPositionTop(style.top);
-      // console.log(
-      //   "🚀 ~ file: Tests.jsx ~ line 94 ~ handleDirectionClick ~ style.top",
-      //   style.top
-      // );
       setPositionLeft(style.left);
-      // console.log(
-      //   "🚀 ~ file: Tests.jsx ~ line 96 ~ handleDirectionClick ~ style.left",
-      //   style.left
-      // );
       setBlockRoute(blockRoute.concat({ top: style.top, left: style.left }));
     } else {
       return;
@@ -166,19 +145,6 @@ const Tests = () => {
       setCurrentTest(currentTest <= 4 ? currentTest + 1 : null);
       setAnserwesSent(true);
       const { top, left } = goalPosition;
-      // console.log(
-      //   "🚀 ~ file:  validateSequence ~ top-positionTop",
-      //   `${top}px`,
-      //   positionTop
-      // );
-      // console.log(
-      //   "🚀 ~ file: Tests.jsx ~ line 170 ~ validateSequence ~ left-positionLeft",
-      //   `${left}px`,
-      //   positionLeft
-      // );
-      // console.log(
-      //   positionTop === `${top + 10}px` || positionTop === `${top - 10}px`
-      // );
 
       if (
         positionTop === `${top + 10}px` ||
@@ -197,7 +163,7 @@ const Tests = () => {
               setAlert({
                 show: true,
                 title: "Genial",
-                message: "Lo has logrado, llegase al objetivo.",
+                message: "Lo has logrado, llegaste al objetivo.",
               });
             } else {
               setAlert({
@@ -416,9 +382,17 @@ const Tests = () => {
         </div>
       </div>
       {anserwesSent && currentTest != null && (
-        <aside style={{ position: "absolute", right: "0", top: "50%" }}>
-          siguite test
-          <button onClick={handleNextTest}>test {currentTest}</button>
+        <aside
+          style={{
+            position: "absolute",
+            right: "0",
+            top: "50%",
+            fontSize: "2vh",
+          }}
+        >
+          <button onClick={handleNextTest} className="buttonRightStyles">
+            Ir al siguiente test <strong>{currentTest}</strong>
+          </button>
         </aside>
       )}
       {currentTest == null && (

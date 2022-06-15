@@ -6,8 +6,10 @@ import getCorrectIncorrectTest from "./api/endpoints/getCorrectIncorrectTest";
 import getTestAverage from "./api/endpoints/getTestAverage";
 import registertestRating from "./api/endpoints/registertestRating";
 import { RangeStepInput } from "react-range-step-input";
+import Modal from "./components/Modal";
 
 const Report = () => {
+  const [alert, setAlert] = useState({ show: false, Title: "", message: "" });
   const [students, setStudents] = useState();
   const [results, setResults] = useState();
   const [goodWrongTest, setGoodWrongTest] = useState();
@@ -87,15 +89,14 @@ const Report = () => {
 
     registertestRating(data)
       .then(function (response) {
-          console.log("🚀 ~ file: Report.jsx ~ line 90 ~ response", response);
+        setAlert({
+          show: true,
+          title: "Enviada",
+          message: "Gracias por tu retroalimentación",
+        });
       })
       .catch(function (error) {
         // console.log("🚀 ~ file: Report.jsx ~ line 93 ~ handleTestRating ~ error", error)
-        // setAlert({
-        //   show: true,
-        //   title: "oh oh",
-        //   message: error?.response?.data?.Mensaje,
-        // });
       });
   };
 
@@ -127,6 +128,7 @@ const Report = () => {
       <button>
         <Link to="/">Volver a la página de inicio</Link>
       </button>
+      {alert.show && <Modal config={alert} setAlert={setAlert} />}
       <section id="Resultados de las preguntas">
         <h2>Resultados de las preguntas</h2>
         <div className="tbl-header">
@@ -149,7 +151,7 @@ const Report = () => {
                   <td>{result[0]}</td>
                   <td>{result[1]}</td>
                   <td>{result[2]}</td>
-                  <td>{result[3]}</td>
+                  <td>{result[3] === 1 ? "Acertada" : "Errada"}</td>
                 </tr>
               ))}
             </tbody>
@@ -190,8 +192,8 @@ const Report = () => {
             <thead>
               <tr>
                 <th>Prueba</th>
-                <th>Buena</th>
-                <th>Mala</th>
+                <th>Correcta</th>
+                <th>Incorrecta</th>
               </tr>
             </thead>
           </table>
