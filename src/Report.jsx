@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import getStudents from "./api/endpoints/getStudents";
 import getStudentTest from "./api/endpoints/getStudentTest";
+import getCoefficient from "./api/endpoints/getCoefficient";
 import getCorrectIncorrectTest from "./api/endpoints/getCorrectIncorrectTest";
 import getTestAverage from "./api/endpoints/getTestAverage";
 import registertestRating from "./api/endpoints/registertestRating";
 import { RangeStepInput } from "react-range-step-input";
 import Modal from "./components/Modal";
+import "./styles/reportStyles.css";
 
 const Report = () => {
   const [alert, setAlert] = useState({ show: false, Title: "", message: "" });
@@ -18,6 +20,9 @@ const Report = () => {
   const [rangeValue2, setRangeValue2] = useState(0);
   const [rangeValue3, setRangeValue3] = useState(0);
   let codigo = localStorage.getItem("cedula");
+  const [setQuestion, setSetQuestion] = useState(1);
+  const [setOpinion, setSetOpinion] = useState(1);
+  const [resultCoefficient, setResultCoefficient] = useState();
 
   const getStudentTestResults = () => {
     getStudentTest(codigo)
@@ -100,6 +105,16 @@ const Report = () => {
       });
   };
 
+  const handleGetCoefficient = () => {
+    getCoefficient({ idPreguntaTest: setQuestion, idPregunta: setOpinion })
+      .then((res) => {
+        setResultCoefficient(res);
+      })
+      .catch((err) => {
+        setResultCoefficient(err?.response?.data?.Mensaje);
+      });
+  };
+
   useEffect(() => {
     getStudents()
       .then(function (response) {
@@ -121,6 +136,7 @@ const Report = () => {
     getStudentTestResults();
     getCorrectIncorrectTestData();
     getTestsAverageData();
+    handleGetCoefficient();
   }, []);
 
   return (
@@ -372,6 +388,61 @@ const Report = () => {
                 Enviar respuesta
               </button>
             </div>
+          </div>
+        </div>
+      </section>
+      <section id="testRating" className="border border-stone-200 pt-10">
+        <div>
+          <div className="flex justify-center">
+            <div>
+              <h3 className="text-3xl font-bold underline mb-3 font-sans">
+                Coeficiente de correlación
+              </h3>
+              <div className="flex gap-6 text-black mb-4">
+                <select
+                  id="preguntas"
+                  className="p-2"
+                  onChange={(e) => {
+                    setSetQuestion(e.target.value);
+                  }}
+                  value={setQuestion}
+                >
+                  <option value={1}>Pregunta 1</option>
+                  <option value={2}>Pregunta 2</option>
+                  <option value={3}>Pregunta 3</option>
+                  <option value={4}>Pregunta 4</option>
+                  <option value={5}>Pregunta 5</option>
+                </select>
+                <select
+                  id="opiniones"
+                  className="p-2"
+                  onChange={(e) => {
+                    setSetOpinion(e.target.value);
+                  }}
+                  value={setOpinion}
+                >
+                  <option value={1}>Opinion 1</option>
+                  <option value={2}>Opinion 2</option>
+                  <option value={3}>Opinion 3</option>
+                </select>
+              </div>
+              <button
+                type="button"
+                class="border border-indigo-500 bg-indigo-500 text-white rounded-md px-4 py-2  transition duration-500 ease select-none hover:bg-indigo-600 focus:outline-none focus:shadow-outline"
+                onClick={handleGetCoefficient}
+              >
+                Obtener
+              </button>
+            </div>
+          </div>
+          <div
+            div
+            class="mx-auto max-w-4xl rounded-3xl bg-[#092540] p-20 text-center mt-10"
+          >
+            Resultado Coeficiente de Correlación
+            <h2 class="text-5xl font-bold leading-tight text-white">
+              {resultCoefficient}
+            </h2>
           </div>
         </div>
       </section>
