@@ -9,6 +9,7 @@ import registertestRating from "./api/endpoints/registertestRating";
 import { RangeStepInput } from "react-range-step-input";
 import Modal from "./components/Modal";
 import "./styles/reportStyles.css";
+import getAverageOpinion from "./api/endpoints/getAverageOpinion";
 
 const Report = () => {
   const [alert, setAlert] = useState({ show: false, Title: "", message: "" });
@@ -23,6 +24,11 @@ const Report = () => {
   const [setQuestion, setSetQuestion] = useState(1);
   const [setOpinion, setSetOpinion] = useState(1);
   const [resultCoefficient, setResultCoefficient] = useState();
+  const [avgOpinion, setAvgOpinion] = useState();
+  console.log(
+    "🚀 ~ file: Report.jsx ~ line 28 ~ Report ~ avgOpinion",
+    avgOpinion
+  );
 
   const getStudentTestResults = () => {
     getStudentTest(codigo)
@@ -120,6 +126,24 @@ const Report = () => {
       .then(function (response) {
         if (response) {
           setStudents(response);
+        }
+      })
+      .catch(function (error) {
+        console.log(
+          "🚀 ~ file: Report.jsx ~ line 20 ~ useEffect ~ error",
+          error
+        );
+        // setAlert({
+        //   show: true,
+        //   title: "oh oh",
+        //   message: error?.response?.data?.Mensaje,
+        // });
+      });
+
+    getAverageOpinion()
+      .then(function (response) {
+        if (response) {
+          setAvgOpinion(response);
         }
       })
       .catch(function (error) {
@@ -391,6 +415,25 @@ const Report = () => {
           </div>
         </div>
       </section>
+      <section id="testRating">
+        <div>
+          <h3 className="text-2xl">
+            Promedio global de cada pregunta de opinión (Encuesta de
+            satisfacción)
+          </h3>
+          <div className="flex justify-between mt-10 capitalize font-bold">
+            {avgOpinion.map((opinionData, index) => (
+              <div
+                key={index}
+                className="border border-gray-800 p-4 bg-blue-600"
+              >
+                <p>{opinionData[0]}</p>
+                <span>{opinionData[1]}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
       <section id="testRating" className="border border-stone-200 pt-10">
         <div>
           <div className="flex justify-center">
@@ -440,12 +483,13 @@ const Report = () => {
             class="mx-auto max-w-4xl rounded-3xl bg-[#092540] p-20 text-center mt-10"
           >
             Resultado Coeficiente de Correlación
-            <h2 class="text-5xl font-bold leading-tight text-white">
+            <h2 class="text-5xl font-bold leading-tight text-white break-words">
               {resultCoefficient}
             </h2>
           </div>
         </div>
       </section>
+      <section></section>
     </>
   );
 };
