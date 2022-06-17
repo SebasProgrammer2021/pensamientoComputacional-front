@@ -357,7 +357,7 @@ const Tests = () => {
               />
             </button>
           </div>
-          <div className="ordersView"></div>
+          <div className="ordersView bg-blue-300 capitalize"></div>
         </div>
         <div
           id="actions"

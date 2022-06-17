@@ -86,8 +86,9 @@ canvas {
 .ordersView {
   display: flex;
   flex-wrap: wrap;
-  width: 60px;
+  width: 190px;
   height: 160px;
+  padding: 0.5rem 5rem;
   justify-content: center;
   margin-top: 20px;
   overflow-y: auto;
